@@ -220,22 +220,56 @@
     </div>
 
     <script>
-        function handleFormSubmit(event) {
+        async function handleFormSubmit(event) {
             event.preventDefault();
             
             // Get form values
             const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
             const studentId = document.getElementById('studentId').value;
+            const course = document.getElementById('course').value;
+            const button = document.querySelector('button[type="submit"]');
 
-            // Transition to Success state
-            const container = document.getElementById('formContainer');
-            container.innerHTML = `
-                <div class="success-state">
-                    <div class="success-icon">🎉</div>
-                    <h3>Welcome, ${name.split(' ')[0]}!</h3>
-                    <p>Registration successful. ID: ${studentId}</p>
-                </div>
-            `;
+            button.disabled = true;
+            button.innerText = 'Registering...';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullName: name,
+                        email: email,
+                        studentId: studentId,
+                        course: course
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Transition to Success state
+                    const container = document.getElementById('formContainer');
+                    container.innerHTML = `
+                        <div class="success-state">
+                            <div class="success-icon">🎉</div>
+                            <h3>Welcome, ${name.split(' ')[0]}!</h3>
+                            <p>Registration successful. ID: ${studentId}</p>
+                            <p style="font-size: 13px; margin-top: 15px; color: #a8e6cf; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px;">✅ Data permanently saved to database!</p>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + result.message);
+                    button.disabled = false;
+                    button.innerText = 'Register Now';
+                }
+            } catch (error) {
+                alert('Server error. Make sure the Flask backend is running.');
+                button.disabled = false;
+                button.innerText = 'Register Now';
+            }
         }
     </script>
 </body>
