@@ -7,20 +7,27 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Setup Python Environment') {
+        stage('Setup and Run Tests') {
             steps {
                 script {
-                    // Requires the Python plugin or a node with python installed
-                    sh 'python3 -m venv venv'
-                    sh '. venv/bin/activate && pip install --upgrade pip'
-                    sh '. venv/bin/activate && pip install -r requirements.txt'
-                }
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                script {
-                    sh '. venv/bin/activate && pytest tests/'
+                    // Check if running on Linux/Mac or Windows
+                    if (isUnix()) {
+                        sh '''
+                            python3 -m venv venv
+                            . venv/bin/activate
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                            pytest tests/
+                        '''
+                    } else {
+                        bat '''
+                            python -m venv venv
+                            call venv\\Scripts\\activate.bat
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                            pytest tests/
+                        '''
+                    }
                 }
             }
         }
