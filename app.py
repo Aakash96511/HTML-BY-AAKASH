@@ -52,6 +52,25 @@ def register():
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
 
+# Admin page
+@app.route('/admin')
+def admin():
+    return send_from_directory('.', 'admin.html')
+
+# API to fetch all students
+@app.route('/api/students', methods=['GET'])
+def get_students():
+    students = Student.query.all()
+    result = []
+    for s in students:
+        result.append({
+            "fullName": s.full_name,
+            "email": s.email,
+            "studentId": s.student_id,
+            "course": s.course
+        })
+    return jsonify(result)
+
 if __name__ == '__main__':
     print("Starting Flask Server on http://127.0.0.1:5000")
     app.run(debug=True, port=5000)

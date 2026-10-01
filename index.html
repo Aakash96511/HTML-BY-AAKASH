@@ -219,6 +219,8 @@
         </form>
     </div>
 
+    <!-- Confetti script -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         async function handleFormSubmit(event) {
             event.preventDefault();
@@ -230,34 +232,38 @@
             const course = document.getElementById('course').value;
             const button = document.querySelector('button[type="submit"]');
 
+            // Interactive loading state
             button.disabled = true;
-            button.innerText = 'Registering...';
+            button.innerHTML = '<span style="display:inline-block; animation: spin 1s linear infinite;">⏳</span> Registering...';
 
             try {
                 const response = await fetch('/register', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        fullName: name,
-                        email: email,
-                        studentId: studentId,
-                        course: course
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName: name, email: email, studentId: studentId, course: course })
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    // Transition to Success state
+                    // Fire Confetti!
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+
+                    // Transition to Success state with interactive buttons
                     const container = document.getElementById('formContainer');
                     container.innerHTML = `
                         <div class="success-state">
                             <div class="success-icon">🎉</div>
                             <h3>Welcome, ${name.split(' ')[0]}!</h3>
                             <p>Registration successful. ID: ${studentId}</p>
-                            <p style="font-size: 13px; margin-top: 15px; color: #a8e6cf; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px;">✅ Data permanently saved to database!</p>
+                            <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: center;">
+                                <a href="/admin" style="padding: 10px 15px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 20px; font-size: 14px; transition: 0.3s;">Admin Dashboard</a>
+                                <a href="/" style="padding: 10px 15px; background: white; color: #0072ff; text-decoration: none; border-radius: 20px; font-size: 14px; font-weight: bold; transition: 0.3s;">Register Another</a>
+                            </div>
                         </div>
                     `;
                 } else {
@@ -272,5 +278,8 @@
             }
         }
     </script>
+    <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
 </body>
 </html>
