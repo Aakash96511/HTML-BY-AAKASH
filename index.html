@@ -3,91 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration Form</title>
+    <title>Advanced Student Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Animated background elements */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 10s infinite ease-in-out alternate;
+            z-index: 1;
+        }
+        .circle-1 { width: 400px; height: 400px; top: -100px; left: -100px; }
+        .circle-2 { width: 300px; height: 300px; bottom: -50px; right: -50px; animation-duration: 12s; animation-direction: alternate-reverse; }
+        .circle-3 { width: 150px; height: 150px; top: 40%; left: 60%; animation-duration: 8s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            100% { transform: translateY(40px) rotate(20deg) scale(1.05); }
+        }
+
         .form-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
         h2 {
             text-align: center;
-            color: #333;
+            color: #fff;
+            margin-bottom: 40px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        .form-group {
+
+        .input-group {
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+            outline: none;
+            background: transparent;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group select {
+            cursor: pointer;
+        }
+
+        .input-group select option {
+            background: #764ba2;
+            color: #fff;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: 0.3s ease all;
+        }
+
+        .input-group input:focus, .input-group input:valid, .input-group select:valid {
+            border-bottom-color: #fff;
+        }
+
+        .input-group input:focus ~ label, 
+        .input-group input:valid ~ label,
+        .input-group.select-group label {
+            top: -20px;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0,114,255,0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,114,255,0.6);
+            background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+        }
+        
+        button:active {
+            transform: scale(0.96);
+        }
+
+        /* Success animation styling */
+        .success-state {
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.8s;
+        }
+        .success-state h3 {
+            font-size: 26px;
             margin-bottom: 15px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        input[type="text"],
-        input[type="email"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #5cb85c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        .success-state p {
             font-size: 16px;
+            opacity: 0.9;
         }
-        button[type="submit"]:hover {
-            background-color: #4cae4c;
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Student Registration</h2>
-    <form action="#" method="POST" id="registrationForm">
-        <div class="form-group">
-            <label for="fullName">Full Name:</label>
-            <input type="text" id="fullName" name="fullName" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="studentId">Student ID:</label>
-            <input type="text" id="studentId" name="studentId" required>
-        </div>
-        <div class="form-group">
-            <label for="course">Select Course:</label>
-            <select id="course" name="course" required>
-                <option value="">--Select a Course--</option>
-                <option value="cs">Computer Science</option>
-                <option value="eng">Engineering</option>
-                <option value="math">Mathematics</option>
-                <option value="physics">Physics</option>
-            </select>
-        </div>
-        <button type="submit">Register</button>
-    </form>
-</div>
+    <!-- Animated Shapes -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
 
+    <div class="form-container" id="formContainer">
+        <h2>Student Portal</h2>
+        <form id="registrationForm" onsubmit="handleFormSubmit(event)">
+            <div class="input-group">
+                <input type="text" id="fullName" name="fullName" required autocomplete="off">
+                <label for="fullName">Full Name</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="email" id="email" name="email" required autocomplete="off">
+                <label for="email">University Email</label>
+            </div>
+            
+            <div class="input-group">
+                <!-- Using pattern for validation -->
+                <input type="text" id="studentId" name="studentId" required autocomplete="off" pattern="[A-Za-z0-9]{6,10}" title="Must be 6-10 alphanumeric characters">
+                <label for="studentId">Student ID</label>
+            </div>
+            
+            <div class="input-group select-group">
+                <select id="course" name="course" required>
+                    <option value="" disabled selected></option>
+                    <option value="cs">Computer Science & Engineering</option>
+                    <option value="ai">Artificial Intelligence</option>
+                    <option value="ds">Data Science</option>
+                    <option value="cyber">Cybersecurity</option>
+                </select>
+                <label for="course">Select Major</label>
+            </div>
+            
+            <button type="submit">Register Now</button>
+        </form>
+    </div>
+
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('fullName').value;
+            const studentId = document.getElementById('studentId').value;
+
+            // Transition to Success state
+            const container = document.getElementById('formContainer');
+            container.innerHTML = `
+                <div class="success-state">
+                    <div class="success-icon">🎉</div>
+                    <h3>Welcome, ${name.split(' ')[0]}!</h3>
+                    <p>Registration successful. ID: ${studentId}</p>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>
